@@ -2,14 +2,14 @@
 Feature: Time entry
 
   Background:
-    Given base url https://api.clockify.me/api
+    Given base url $(env.base_url_clockify)
+    And header x-api-key = $(env.api_key)
 
   @GetTimeEntriesForAUserOnWorkspace
   Scenario: Get time entries for a user on workspace
     And call Workspace.feature@GetAllMyWorkspaces
     And call Users.feature@FindAllUsersOnWorkspace
     And endpoint /v1/workspaces/{{idWorkspace}}/user/{{idUser}}/time-entries
-    And header x-api-key = "OWM5NmY5ZmUtNGJlZS00NzVmLTljNzAtNjRmZDJmODhlOWI3"
     When execute method GET
     Then the status code should be 200
     And response should be $.[0].id = "685171e47e359d43b57f7c33"
@@ -19,7 +19,6 @@ Feature: Time entry
   Scenario: Add a new time entry
     And call Workspace.feature@GetAllMyWorkspaces
     And endpoint /v1/workspaces/{{idWorkspace}}/time-entries
-    And header x-api-key = "OWM5NmY5ZmUtNGJlZS00NzVmLTljNzAtNjRmZDJmODhlOWI3"
     And header Content-Type = "application/json"
     And body jsons/bodies/addTimeEntry.json
     When execute method POST
@@ -30,7 +29,6 @@ Feature: Time entry
   Scenario: Add a new time entry in project
     And call Workspace.feature@GetAllMyWorkspaces
     And endpoint /v1/workspaces/{{idWorkspace}}/time-entries
-    And header x-api-key = "OWM5NmY5ZmUtNGJlZS00NzVmLTljNzAtNjRmZDJmODhlOWI3"
     And header Content-Type = "application/json"
     And body jsons/bodies/addTimeEntryInProject.json
     When execute method POST
@@ -41,7 +39,6 @@ Feature: Time entry
   Scenario: Update time entry on workspace
     And call TimeEntry.feature@GetTimeEntriesForAUserOnWorkspace
     And endpoint /v1/workspaces/{{idWorkspace}}/time-entries/{{idTimeEntry}}
-    And header x-api-key = "OWM5NmY5ZmUtNGJlZS00NzVmLTljNzAtNjRmZDJmODhlOWI3"
     And header Content-Type = "application/json"
     And body jsons/bodies/updateTimeEntry.json
     When execute method PUT
@@ -54,6 +51,5 @@ Feature: Time entry
     And call Workspace.feature@GetAllMyWorkspaces
     And call TimeEntry.feature@AddANewTimeEntry
     And endpoint /v1/workspaces/{{idWorkspace}}/time-entries/{{idTimeEntry}}
-    And header x-api-key = "OWM5NmY5ZmUtNGJlZS00NzVmLTljNzAtNjRmZDJmODhlOWI3"
     When execute method DELETE
     Then the status code should be 204
